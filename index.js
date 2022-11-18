@@ -78,7 +78,7 @@ function uploadToDrive() {
     }
   }).then(file => {
       actions.info('File uploaded successfully');
-      actions.setOutput(link, file.data.webViewLink);
+      actions.setOutput(link, `https://drive.google.com/file/d/${file.data.id}/view?usp=share_link`);
     }).catch(e => {
       actions.error('Upload failed');
       throw e;

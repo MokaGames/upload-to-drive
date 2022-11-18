@@ -19,12 +19,9 @@ const scopes = ['https://www.googleapis.com/auth/drive'];
 const auth = new google.auth.JWT(credentialsJSON.client_email, null, credentialsJSON.private_key, scopes);
 const drive = google.drive({ version: 'v3', auth });
 
-const driveLink = `https://drive.google.com/drive/folders/${folder}`
 let filename = target.split('/').pop();
 
 async function main() {
-  actions.setOutput(link, driveLink);
-
   if (fs.lstatSync(target).isDirectory()){
     filename = `${name || target}.zip`
 
@@ -79,8 +76,10 @@ function uploadToDrive() {
     media: {
       body: fs.createReadStream(`${name || target}${fs.lstatSync(target).isDirectory() ? '.zip' : ''}`)
     }
-  }).then(() => actions.info('File uploaded successfully'))
-    .catch(e => {
+  }).then(file => {
+      actions.info('File uploaded successfully');
+      actions.setOutput(link, file.data.webViewLink);
+    }).catch(e => {
       actions.error('Upload failed');
       throw e;
     });
